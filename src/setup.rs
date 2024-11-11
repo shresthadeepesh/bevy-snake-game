@@ -14,13 +14,13 @@ pub fn load_textures(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.insert_resource(textures);
 }
 
-pub fn setup(mut commands: Commands) {
+pub fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.spawn(Camera2dBundle::default());
 
-    setup_spawns(commands);
+    setup_spawns(commands, asset_server);
 }
 
-pub fn setup_spawns(mut commands: Commands) {
+pub fn setup_spawns(mut commands: Commands, asset_server: Res<AssetServer>) {
     //score
     commands.spawn((
         TextBundle::from_section(
@@ -53,13 +53,13 @@ pub fn setup_spawns(mut commands: Commands) {
     ));
 
     //spawn initial food
-    spawn_initial_food(&mut commands);
+    spawn_initial_food(&mut commands, &asset_server);
 
     //spawn walls
-    spawn_walls(commands);
+    spawn_walls(commands, &asset_server);
 }
 
-fn spawn_initial_food(commands: &mut Commands) {
+fn spawn_initial_food(commands: &mut Commands, asset_server: &Res<AssetServer>) {
     let color = Color::srgb(0.0, 1.0, 0.0);
     let spawn_bounds = Vec2::new(
         (WINDOW_WIDTH - WALL_THICKNESS * 2.0) / 2.0,
@@ -70,11 +70,13 @@ fn spawn_initial_food(commands: &mut Commands) {
     let x = rng.gen_range(-spawn_bounds.x..spawn_bounds.x);
     let y = rng.gen_range(-spawn_bounds.y..spawn_bounds.y);
 
+    let regular_food = asset_server.load("models/apple.png");
+
     commands.spawn((
         SpriteBundle {
-            // texture: game_textures.regular_food.clone(),
+            texture: regular_food.clone(),
             sprite: Sprite {
-                color,
+                color: Color::srgba(1.0, 1.0, 1.0, 1.0),
                 custom_size: FOOD_SIZE,
                 ..default()
             },
@@ -87,11 +89,14 @@ fn spawn_initial_food(commands: &mut Commands) {
     ));
 }
 
-fn spawn_walls(mut commands: Commands) {
+fn spawn_walls(mut commands: Commands, asset_server: &Res<AssetServer>) {
+    let wall_vertical_texture = asset_server.load("models/wall-vertical.png");
+    let wall_horizontal_texture = asset_server.load("models/wall-horizontal.png");
+
     commands.spawn((
         SpriteBundle {
+            texture: wall_vertical_texture.clone(),
             sprite: Sprite {
-                color: WALL_COLOR,
                 custom_size: Some(Vec2::new(WALL_THICKNESS, WINDOW_HEIGHT)),
                 ..default()
             },
@@ -103,8 +108,8 @@ fn spawn_walls(mut commands: Commands) {
 
     commands.spawn((
         SpriteBundle {
+            texture: wall_vertical_texture.clone(),
             sprite: Sprite {
-                color: WALL_COLOR,
                 custom_size: Some(Vec2::new(WALL_THICKNESS, WINDOW_HEIGHT)),
                 ..default()
             },
@@ -116,8 +121,8 @@ fn spawn_walls(mut commands: Commands) {
 
     commands.spawn((
         SpriteBundle {
+            texture: wall_horizontal_texture.clone(),
             sprite: Sprite {
-                color: WALL_COLOR,
                 custom_size: Some(Vec2::new(WINDOW_WIDTH, WALL_THICKNESS)),
                 ..default()
             },
@@ -128,8 +133,8 @@ fn spawn_walls(mut commands: Commands) {
     ));
     commands.spawn((
         SpriteBundle {
+            texture: wall_horizontal_texture.clone(),
             sprite: Sprite {
-                color: WALL_COLOR,
                 custom_size: Some(Vec2::new(WINDOW_WIDTH, WALL_THICKNESS)),
                 ..default()
             },

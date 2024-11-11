@@ -135,11 +135,6 @@ fn spawn_food_at_random_position(commands: &mut Commands, game_textures: &Res<Ga
 
     commands.spawn((
         SpriteBundle {
-            // sprite: Sprite {
-            //     color,
-            //     custom_size: FOOD_SIZE,
-            //     ..default()
-            // },
             sprite: Sprite {
                 // Add these lines to handle transparency
                 color: Color::srgba(1.0, 1.0, 1.0, 1.0), // Full opacity

@@ -1,4 +1,4 @@
-use bevy::{input::ButtonInput, math::Vec3, prelude::{Commands, Entity, KeyCode, Mut, Or, Query, Res, ResMut, Transform, With, Without}, text::Text, time::Time};
+use bevy::{asset::AssetServer, input::ButtonInput, math::Vec3, prelude::{Commands, Entity, KeyCode, Mut, Or, Query, Res, ResMut, Transform, With, Without}, text::Text, time::Time};
 
 use crate::{components::{Food, GameState, GameTextures, Player, Score, Segment}, constants::{MOVE_DOWN, MOVE_LEFT, MOVE_RIGHT, MOVE_UP, WALL_THICKNESS, WINDOW_BOUND_X, WINDOW_BOUND_Y}, setup::setup_spawns};
 
@@ -72,6 +72,7 @@ pub fn handle_restart(
     mut game_state: ResMut<GameState>,
     query: Query<Entity, Or<(With<Player>, With<Segment>, With<Food>, With<Text>)>>,
     mut score: ResMut<Score>,
+    asset_server: Res<AssetServer>
 ) {
     if !game_state.running && keyboard.just_pressed(KeyCode::KeyR) {
         for entity in query.iter() {
@@ -82,6 +83,6 @@ pub fn handle_restart(
         score.value = 0;
 
         //respawn player and food
-        setup_spawns(commands);
+        setup_spawns(commands, asset_server);
     }
 }
